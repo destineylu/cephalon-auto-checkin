@@ -1,0 +1,43 @@
+name: 自动签到
+
+# 触发条件
+on:
+  # 定时运行（每天北京时间 8:00）
+  schedule:
+    - cron: '0 0 * * *'  # UTC 时间 00:00，北京时间 08:00
+
+  # 手动触发
+  workflow_dispatch:
+
+  # Push 代码时触发（用于测试）
+  push:
+    branches: [ main ]
+
+# 任务
+jobs:
+  checkin:
+    runs-on: ubuntu-latest  # 使用最新的 Ubuntu 系统
+
+    steps:
+    # 1. 检出代码
+    - name: 检出代码
+      uses: actions/checkout@v3
+
+    # 2. 设置 Python 环境
+    - name: 设置 Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    # 3. 安装依赖
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # 4. 执行签到
+    - name: 执行签到
+      env:
+        CHECKIN_TOKEN: ${{ secrets.CHECKIN_TOKEN }}
+      run: |
+        python checkin.py
