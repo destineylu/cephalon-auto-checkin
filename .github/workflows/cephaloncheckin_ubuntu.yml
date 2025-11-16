@@ -1,0 +1,30 @@
+name: Daily Check-in
+
+on:
+  schedule:
+    - cron: '23 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  sign-in:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # 👇 这里使用了你的 requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Check-in Script
+        env:
+          CEP_TOKEN: ${{ secrets.CEP_TOKEN }}
+        # 记得确认文件名是 cephaloncheckin.py
+        run: python cephaloncheckin.py
