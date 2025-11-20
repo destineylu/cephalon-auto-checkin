@@ -5,7 +5,7 @@ import json
 url = "https://prod.unicorn.org.cn/cephalon/user-center/v1/signs/today"
 
 # 2. 你的 Token (记得填入！)
-token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJbmZvIjoiMTc2Njk4MDIyMTEwNjU0ODczNiIsImV4cCI6MTc2MzczMTI2Mn0.waBVSCULo3RjdENUe6O2_ijENQCmhPSxMNj8Mqca53M"
+token = "Bearer "
 
 # 3. 请求头
 headers = {
