@@ -21,14 +21,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # 如果 requirements.txt 里没有 requests，这里会报错，但通常你的项目里已经有了
+          # 如果 requirements.txt 存在则安装，否则忽略
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # 保险起见，强制安装一下 requests
+          # 强制安装 requests，防止缺失
           pip install requests
 
       - name: Run Ikuuu Checkin
-      env:
-        # 修改这里：传入账号和密码，而不是 Cookie
-        IKUUU_EMAIL: ${{ secrets.IKUUU_EMAIL }}
-        IKUUU_PASSWORD: ${{ secrets.IKUUU_PASSWORD }}
-      run: python ikuuu.py
+        env:
+          # 确保你在 Secrets 里配置的是 IKUUU_EMAIL 和 IKUUU_PASSWORD
+          IKUUU_EMAIL: ${{ secrets.IKUUU_EMAIL }}
+          IKUUU_PASSWORD: ${{ secrets.IKUUU_PASSWORD }}
+        # 👇【重要】这里必须改成你新建的文件名 Newikuuu.py
+        run: python Newikuuu.py
