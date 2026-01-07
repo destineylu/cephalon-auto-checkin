@@ -1,0 +1,33 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    # 每天北京时间早上 8 点运行 (UTC 时间 0 点)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许你手动点击按钮测试运行
+
+jobs:
+  wake_up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Supabase Status
+        env:
+          # 推荐使用 Secrets 存储，或者直接填入（如果仓库是私有的）
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          echo "正在发送保活请求..."
+          
+          # 发送一个 GET 请求到 REST API 根目录
+          # 这会列出所有公开的表，算作一次有效的数据库 API 调用
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "$SUPABASE_URL/rest/v1/" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY")
+          
+          if [ "$response" -eq 200 ]; then
+            echo "✅ 保活成功！Supabase 返回状态码: 200"
+          else
+            echo "⚠️ 请求可能失败，状态码: $response"
+            # 即使返回非200（例如权限错误），只要有流量到达，通常也能达到保活目的
+            # 但最好检查一下 URL 和 Key 是否正确
+          fi
